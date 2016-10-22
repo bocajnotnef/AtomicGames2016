@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 import sys
 import argparse
+import random
 
 global DebugFile
 DebugFile = None
@@ -33,6 +34,11 @@ def main():
         DebugFile = open("debug_eel.txt", "w")
     board = eval(args.board[1:-1])
     PrettyPrint(board, sys.stderr)
+
+
+def play_random(board):
+    random.choice([x for x in board[0] if x])
+    
 
 if __name__ == "__main__":
     main()
