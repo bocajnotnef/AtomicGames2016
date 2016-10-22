@@ -47,8 +47,7 @@ def SearchHorizontal(board, curr_row, curr_col, col_min, col_max, player):
 
     poss_horiz = [0]
 
-    print("Checking from col {} to col {}".format(col_min, col_max + 1 - 4))
-    for col_start in range(col_min, col_max + 1 - 4):
+    for col_start in range(col_min, col_max - 2):
         count = 1
         for offset in range(0, 4):
             if board[curr_row][col_start + offset] == player:
@@ -65,12 +64,12 @@ def SearchVertical(board, curr_row, curr_col, row_min, row_max, player):
     much player can score"""
     poss_vert = [0]
 
-    for row_start in range(row_max + 1 - 4, row_min - 1, -1):
+    for row_start in range(row_min, row_max - 2):
         count = 1
         for offset in range(0, 4):
-            if board[curr_row][row_start + offset] == player:
+            if board[row_start + offset][curr_col] == player:
                 count += 1
-            elif board[curr_row][row_start + offset] != 0:
+            elif board[row_start + offset][curr_col] != 0:
                 count = 0  # opposing player is here, can't possibly win if we go here, abort
                 break
         poss_vert.append(count)
@@ -98,12 +97,13 @@ def SearchDiag(board, curr_row, curr_col, row_min, row_max, col_min, col_max,
         backward_len = 3
     # for each value in range from 0 to length of diag - 4 inclusive
     best = 0
+    print("Checking {} {}, downleft {}, downright {}".format(curr_row, curr_col, down_left, down_right))
     for i in range(forward_len - 3):
         score = 1
-        new_diag = [board[curr_row - down_left + i][curr_col - down_left + i],
-                    board[curr_row - down_left + i + 1][curr_col - down_left + i + 1],
-                    board[curr_row - down_left + i + 2][curr_col - down_left + i + 2],
-                    board[curr_row - down_left + i + 3][curr_col - down_left + i + 3]]
+        new_diag = [board[curr_row + down_left - i][curr_col - down_left + i],
+                    board[curr_row + down_left - i - 1][curr_col - down_left + i + 1],
+                    board[curr_row + down_left - i - 2][curr_col - down_left + i + 2],
+                    board[curr_row + down_left - i - 3][curr_col - down_left + i + 3]]
         for place in new_diag:
             if place == player:
                 score += 1
@@ -150,17 +150,15 @@ def SearchAndScore(board, row, col):
     horiz_p1 = SearchHorizontal(board, row, col, col_min, col_max, 1)
     horiz_p2 = SearchHorizontal(board, row, col, col_min, col_max, 2)
 
-    vert_p1 = 0
-    vert_p2 = 0
-    #vert_p1 = SearchVertical(board, row, col, row_min, row_max, 1)
-    #vert_p2 = SearchVertical(board, row, col, row_min, row_max, 2)
+    vert_p1 = SearchVertical(board, row, col, row_min, row_max, 1)
+    vert_p2 = SearchVertical(board, row, col, row_min, row_max, 2)
 
-    # diag_p1 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
-    # diag_p2 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 2)
+    diag_p1 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
+    diag_p2 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 2)
 
     # return a turple
-    # return (max(horiz_p1, vert_p1, diag_p1), max(horiz_p2, vert_p2, diag_p2))
-    return (max([horiz_p1, vert_p1]), max([horiz_p2, vert_p2]))
+    return (max(horiz_p1, vert_p1, diag_p1), max(horiz_p2, vert_p2, diag_p2))
+    # return (max([horiz_p1, vert_p1]), max([horiz_p2, vert_p2]))
 
 
 def ScoreEmptyPositions(board):
