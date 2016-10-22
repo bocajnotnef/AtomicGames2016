@@ -41,6 +41,40 @@ $$$$$$$$\\$$$$$$$\ $$ |$$$$$$$  |
     print(banner, file=location)
 
 
+def SearchAndScore(board, row, el):
+    """
+    Search in all cardinal directions for pieces, for both players, and determine how badly they
+    want to be at (row, col)
+    """
+
+    # bound which row we can be in
+    row_max = min([row + 3, len(board) - 1])
+    row_min = max([row - 3, 0])
+    # bound which column we can be in
+    col_max = min([col + 3, len(board[0]) - 1])
+    col_min = min([col - 3, 0])
+
+    # do each search
+    horiz_p1 = SearchHorizontal(row, col, col_min, col_max, 1)
+    horiz_p2 = SearchHorizontal(row, col, col_min, col_max, 2)
+
+    vert_p1 = SearchVertical(row, col, row_min, row_max, 1)
+    vert_p2 = SearchVertical(row, col, row_min, row_max, 2)
+
+    diag_p1 = SearchDiag(row, col, row_min, row_max, col_min, col_max, 1)
+    diag_p2 = SearchDiag(row, col, row_min, row_max, col_min, col_max, 1)
+
+
+def ScoreEmptyPositions(board):
+    """
+    Score the empty positions of the board according to who wants to be there the most
+    """
+    scored_board = [[None] * len(board[0])] * len(board)
+    for row in range(len(board)):
+        for el in range(len(board[0])):
+            scored_board[row][el] = SearchAndScore(board, row, el)
+
+
 def get_args():
     """Build parser and get parsed args from it
     returns parsed args"""
@@ -79,6 +113,7 @@ def main():
 
 
 def play_random(board):
+    """Plays a random empty location on the board"""
     return random.choice([x for x in range(len(board[0])) if not board[0][x]])
 
 
