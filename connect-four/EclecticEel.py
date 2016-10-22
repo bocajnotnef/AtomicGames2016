@@ -7,6 +7,40 @@ global DebugFile
 DebugFile = None
 
 
+def PrintBanner(location):
+    """Prints the banner of our progam to the location"""
+    banner = r"""
+$$$$$$$$\          $$\                       $$\     $$\
+$$  _____|         $$ |                      $$ |    \__|
+$$ |      $$$$$$$\ $$ | $$$$$$\   $$$$$$$\ $$$$$$\   $$\  $$$$$$$\
+$$$$$\   $$  _____|$$ |$$  __$$\ $$  _____|\_$$  _|  $$ |$$  _____|
+$$  __|  $$ /      $$ |$$$$$$$$ |$$ /        $$ |    $$ |$$ /
+$$ |     $$ |      $$ |$$   ____|$$ |        $$ |$$\ $$ |$$ |
+$$$$$$$$\\$$$$$$$\ $$ |\$$$$$$$\ \$$$$$$$\   \$$$$  |$$ |\$$$$$$$\
+\________|\_______|\__| \_______| \_______|   \____/ \__| \_______|
+$$$$$$$$\          $$\
+$$  _____|         $$ |
+$$ |      $$$$$$\  $$ | $$$$$$$\
+$$$$$\   $$  __$$\ $$ |$$  _____|
+$$  __|  $$$$$$$$ |$$ |\$$$$$$\
+$$ |     $$   ____|$$ | \____$$\
+$$$$$$$$\\$$$$$$$\ $$ |$$$$$$$  |
+\________|\_______|\__|\_______/
+\n\n
+            _____
+     _..--'`     `'-.       BEHOLD! The EclecticEel!
+   .'            _   '.     ASCII Art From
+                (@)    \    http://www.chris.com/ascii/joan/www.geocities.com/SoHo/7373/aquatic.html
+                _.---:-'    Program written by Riley Annis & Jake Fenton
+               _\'._ \\     https://github.com/bocajnotnef/AtomicGames2016
+    jgs_.--''`` `'-.`' |    for the Atomic Object Atomic Games 2016
+     .'             `""`
+    /
+\n\n
+"""
+    print(banner, file=location)
+
+
 def get_args():
     """Build parser and get parsed args from it
     returns parsed args"""
@@ -38,13 +72,15 @@ def main():
     args = get_args()
     if args.debug:
         DebugFile = open("debug_eel.txt", "w")
+    PrintBanner(sys.stderr)
     board = eval(args.board[1:-1])
     PrettyPrint(board, sys.stderr)
+    sys.exit(play_random(board))
 
 
 def play_random(board):
-    random.choice([x for x in board[0] if x])
-    
+    return random.choice([x for x in range(len(board[0])) if not board[0][x]])
+
 
 if __name__ == "__main__":
     main()
