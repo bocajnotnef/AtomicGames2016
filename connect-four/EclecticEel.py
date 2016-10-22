@@ -7,6 +7,8 @@ DebugFile = None
 
 
 def get_args():
+    """Build parser and get parsed args from it
+    returns parsed args"""
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--board", help="JSON string of board state")
     parser.add_argument("--debug", action="store_true",
@@ -15,12 +17,14 @@ def get_args():
 
 
 def PrettyPrint(board, location):
+    """Print the board in a nice fasion"""
     print("Board state is:", file=location)
     for el in board:
         print("\t{}".format(el), file=location)
 
 
 def log(string):
+    """"Log a string to file, if debugging is enabled"""
     global DebugFile
     if DebugFile is not None:
         print(string, DebugFile)
