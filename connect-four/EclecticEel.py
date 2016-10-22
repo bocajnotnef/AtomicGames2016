@@ -178,8 +178,7 @@ def get_args():
     parser.add_argument("-b", "--board", help="JSON string of board state")
     parser.add_argument("-t", "--timetokill", help="Allowed runtime length of program")
     parser.add_argument("-p", "--player", help="Which player we'll be")
-    parser.add_argument("--debug", action="store_true",
-                        help="Debug Mode")
+    parser.add_argument("--debug", help="Debug Mode")
     return parser.parse_args()
 
 
@@ -201,16 +200,18 @@ def main():
     global DebugFile
     args = get_args()
     if args.debug:
-        DebugFile = open("debug_eel.txt", "w")
+        # DebugFile = open("debug_eel.txt", "w")
+        DebugFile = sys.stderr
 
     player_id = 1 + ("two" in args.player)
-    PrintBanner(sys.stderr)
+    # PrintBanner(sys.stderr)
     board = eval(args.board[1:-1])
+    print("\n\nWe are {}".format(args.player), file=sys.stderr)
     PrettyPrint(board, sys.stderr)
     scored_board = ScoreEmptyPositions(board)
     print("Possible column scores:\n{}".format(scored_board), file=sys.stderr)
     move = play_scored(board, player_id)
-    print("Doing move: {}".format(move))
+    print("Doing move: {}".format(move), file=sys.stderr)
     sys.exit(move)
 
 
@@ -228,15 +229,20 @@ def play_scored(board, player):
     their_best_position = 0
 
     us = player - 1
-    them = (player + 1) % 2  # we're 1, 1 + 1 % 2 = 2; we're 2: 2 + 1 % 2 = 1
+    them = (us + 1) % 2  # we're 1, 1 + 1 % 2 = 0; we're 2: 2 + 1 % 2 = 1
 
     for position in range(len(scored_board)):
+        if scored_board[position] is None:
+            continue  # skip this loop, we can't play here
         if(scored_board[position][us] > our_max_poss):
             our_max_poss = scored_board[position][us]
             our_best_position = position
         if(scored_board[position][them] > their_max_poss):
             their_max_poss = scored_board[position][them]
             their_best_position = position
+
+    log("As player {}, we found we can get {}, opposed by {}".format(player, our_max_poss,
+                                                                     their_max_poss))
 
     if their_max_poss == 4 or their_max_poss > our_max_poss:
         return their_best_position
