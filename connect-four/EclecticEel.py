@@ -41,7 +41,9 @@ $$$$$$$$\\$$$$$$$\ $$ |$$$$$$$  |
     print(banner, file=location)
 
 
-def SearchHorizontal()
+def SearchHorizontal(board, curr_row, curr_col, col_min, col_max, player):
+    """Search from our current location in range [col_min, col_max] to see how
+    much player can score"""
 
 
 def SearchAndScore(board, row, el):
@@ -66,6 +68,9 @@ def SearchAndScore(board, row, el):
 
     diag_p1 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
     diag_p2 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
+
+    # return a turple
+    return (max(horiz_p1, vert_p1, diag_p1), max(horiz_p2, vert_p2, diag_p2))
 
 
 def ScoreEmptyPositions(board):
