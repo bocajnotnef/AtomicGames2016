@@ -44,25 +44,37 @@ $$$$$$$$\\$$$$$$$\ $$ |$$$$$$$  |
 def SearchHorizontal(board, curr_row, curr_col, col_min, col_max, player):
     """Search from our current location in range [col_min, col_max] to see how
     much player can score"""
-    count = 1
-    for chosen_col in range(col_min, col_max + 1):
-        if board[curr_row][chosen_col] == player:
-            count += 1
-        elif board[curr_row][chosen_col] != 0:
-            return 0  # opposing player is here, can't possibly win if we go here, abort
-    return count
+
+    poss_horiz = [0]
+
+    print("Checking from col {} to col {}".format(col_min, col_max + 1 - 4))
+    for col_start in range(col_min, col_max + 1 - 4):
+        count = 1
+        for offset in range(0, 4):
+            if board[curr_row][col_start + offset] == player:
+                count += 1
+            elif board[curr_row][col_start + offset] != 0:
+                count = 0  # opposing player is here, can't possibly win if we go here, abort
+                break
+        poss_horiz.append(count)
+    return max(poss_horiz)
 
 
 def SearchVertical(board, curr_row, curr_col, row_min, row_max, player):
     """Search from our current location in range [col_min, col_max] to see how
     much player can score"""
-    count = 1
-    for chosen_row in range(row_min, row_max + 1):
-        if board[curr_row][chosen_row] == player:
-            count += 1
-        elif board[curr_row][chosen_row] != 0:
-            return 0  # opposing player is here, can't possibly win if we go here, abort
-    return count
+    poss_vert = [0]
+
+    for row_start in range(row_max + 1 - 4, row_min - 1, -1):
+        count = 1
+        for offset in range(0, 4):
+            if board[curr_row][row_start + offset] == player:
+                count += 1
+            elif board[curr_row][row_start + offset] != 0:
+                count = 0  # opposing player is here, can't possibly win if we go here, abort
+                break
+        poss_vert.append(count)
+    return max(poss_vert)
 
 
 def SearchAndScore(board, row, col):
@@ -76,14 +88,16 @@ def SearchAndScore(board, row, col):
     row_min = max([row - 3, 0])
     # bound which column we can be in
     col_max = min([col + 3, len(board[0]) - 1])
-    col_min = min([col - 3, 0])
+    col_min = max([col - 3, 0])
 
     # do each search
     horiz_p1 = SearchHorizontal(board, row, col, col_min, col_max, 1)
     horiz_p2 = SearchHorizontal(board, row, col, col_min, col_max, 2)
 
-    vert_p1 = SearchVertical(board, row, col, row_min, row_max, 1)
-    vert_p2 = SearchVertical(board, row, col, row_min, row_max, 2)
+    vert_p1 = 0
+    vert_p2 = 0
+    #vert_p1 = SearchVertical(board, row, col, row_min, row_max, 1)
+    #vert_p2 = SearchVertical(board, row, col, row_min, row_max, 2)
 
     # diag_p1 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
     # diag_p2 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 2)
