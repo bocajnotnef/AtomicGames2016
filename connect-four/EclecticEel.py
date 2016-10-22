@@ -97,7 +97,6 @@ def SearchDiag(board, curr_row, curr_col, row_min, row_max, col_min, col_max,
         backward_len = 3
     # for each value in range from 0 to length of diag - 4 inclusive
     best = 0
-    print("Checking {} {}, downleft {}, downright {}".format(curr_row, curr_col, down_left, down_right))
     for i in range(forward_len - 3):
         score = 1
         new_diag = [board[curr_row + down_left - i][curr_col - down_left + i],
@@ -211,18 +210,46 @@ def main():
     args = get_args()
     if args.debug:
         DebugFile = open("debug_eel.txt", "w")
+
+    player_id = 1 + ("two" in args.player)
     PrintBanner(sys.stderr)
     board = eval(args.board[1:-1])
     PrettyPrint(board, sys.stderr)
     scored_board = ScoreEmptyPositions(board)
     print("Possible column scores:\n{}".format(scored_board), file=sys.stderr)
-    sys.exit(play_random(board))
+    move = play_scored(board, player_id)
+    print("Doing move: {}".format(move))
+    sys.exit(move)
 
 
 def play_random(board):
     """Plays a random empty location on the board"""
     return random.choice([x for x in range(len(board[0])) if not board[0][x]])
 
+
+def play_scored(board, player):
+    """Plays based on max possible block/obtainable"""
+    scored_board = ScoreEmptyPositions(board)
+    our_max_poss = 0
+    our_best_position = 0
+    their_max_poss = 0
+    their_best_position = 0
+
+    us = player - 1
+    them = (player + 1) % 2  # we're 1, 1 + 1 % 2 = 2; we're 2: 2 + 1 % 2 = 1
+
+    for position in range(len(scored_board)):
+        if(scored_board[position][us] > our_max_poss):
+            our_max_poss = scored_board[position][us]
+            our_best_position = position
+        if(scored_board[position][them] > their_max_poss):
+            their_max_poss = scored_board[position][them]
+            their_best_position = position
+
+    if their_max_poss == 3 or their_max_poss > our_max_poss:
+        return their_best_position
+    else:
+        return our_best_position
 
 if __name__ == "__main__":
     main()
