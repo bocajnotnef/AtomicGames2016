@@ -78,30 +78,32 @@ def SearchVertical(board, curr_row, curr_col, row_min, row_max, player):
 
 
 def SearchDiag(board, curr_row, curr_col, row_min, row_max, col_min, col_max,
-        player):
+               player):
     """
     Search from our current location in diagonals using [row_min, row_max] and
     [col_min, col_max] centered around (row, col) to see how much player can
     score
     """
-    #get distance on board backwards and forwards, then get sum
+    # get distance on board backwards and forwards, then get sum
     up_left = min(curr_row, curr_col)
-    up_right = min(curr_row, col_max-curr_col)
-    down_left = min(row_max-curr_row, curr_col)
-    down_right = min(row_max-curr_row, col_max-curr_col)
+    up_right = min(curr_row, col_max - curr_col)
+    down_left = min(row_max - curr_row, curr_col)
+    down_right = min(row_max - curr_row, col_max - curr_col)
     forward_len = up_right + down_left + 1
     backward_len = up_left + down_right + 1
-    #if we're up in a corner, at least get the loops working
-    if(forward_len < 3): forward_len = 3
-    if(backward_len < 3): backward_len = 3
-    #for each value in range from 0 to length of diag - 4 inclusive
+    # if we're up in a corner, at least get the loops working
+    if(forward_len < 3):
+        forward_len = 3
+    if(backward_len < 3):
+        backward_len = 3
+    # for each value in range from 0 to length of diag - 4 inclusive
     best = 0
-    for i in range(forward_len-3):
+    for i in range(forward_len - 3):
         score = 1
-        new_diag = [board[curr_row-down_left+i][curr_col-down_left+i],
-                    board[curr_row-down_left+i+1][curr_col-down_left+i+1],
-                    board[curr_row-down_left+i+2][curr_col-down_left+i+2],
-                    board[curr_row-down_left+i+3][curr_col-down_left+i+3]]
+        new_diag = [board[curr_row - down_left + i][curr_col - down_left + i],
+                    board[curr_row - down_left + i + 1][curr_col - down_left + i + 1],
+                    board[curr_row - down_left + i + 2][curr_col - down_left + i + 2],
+                    board[curr_row - down_left + i + 3][curr_col - down_left + i + 3]]
         for place in new_diag:
             if place == player:
                 score += 1
@@ -112,12 +114,12 @@ def SearchDiag(board, curr_row, curr_col, row_min, row_max, col_min, col_max,
                 break
         if score > best:
             best = score
-    for i in range(backward_len-3):
+    for i in range(backward_len - 3):
         score = 0
-        new_diag = [board[curr_row-up_left+i][curr_col-up_left+i],
-                    board[curr_row-up_left+i+1][curr_col-up_left+i+1],
-                    board[curr_row-up_left+i+2][curr_col-up_left+i+2],
-                    board[curr_row-up_left+i+3][curr_col-up_left+i+3]]
+        new_diag = [board[curr_row - up_left + i][curr_col - up_left + i],
+                    board[curr_row - up_left + i + 1][curr_col - up_left + i + 1],
+                    board[curr_row - up_left + i + 2][curr_col - up_left + i + 2],
+                    board[curr_row - up_left + i + 3][curr_col - up_left + i + 3]]
         for place in new_diag:
             if place == player:
                 score += 1
