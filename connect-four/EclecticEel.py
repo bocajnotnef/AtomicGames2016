@@ -95,41 +95,33 @@ def SearchDiag(board, curr_row, curr_col, row_min, row_max, col_min, col_max,
         forward_len = 3
     if(backward_len < 3):
         backward_len = 3
-    # for each value in range from 0 to length of diag - 4 inclusive
-    best = 0
     print("Checking {} {}, downleft {}, downright {}".format(curr_row, curr_col, down_left, down_right))
-    for i in range(forward_len - 3):
-        score = 1
-        new_diag = [board[curr_row + down_left - i][curr_col - down_left + i],
-                    board[curr_row + down_left - i - 1][curr_col - down_left + i + 1],
-                    board[curr_row + down_left - i - 2][curr_col - down_left + i + 2],
-                    board[curr_row + down_left - i - 3][curr_col - down_left + i + 3]]
-        for place in new_diag:
-            if place == player:
-                score += 1
-            elif place == 0:
-                pass
-            else:
-                score = 0
-                break
-        if score > best:
-            best = score
-    for i in range(backward_len - 3):
-        score = 0
-        new_diag = [board[curr_row - up_left + i][curr_col - up_left + i],
-                    board[curr_row - up_left + i + 1][curr_col - up_left + i + 1],
-                    board[curr_row - up_left + i + 2][curr_col - up_left + i + 2],
-                    board[curr_row - up_left + i + 3][curr_col - up_left + i + 3]]
-        for place in new_diag:
-            if place == player:
-                score += 1
-            elif place == 0:
-                pass
-            else:
-                score = 0
-                break
-        if score > best:
-            best = score
+    #Pair up info
+    loop_info = ((forward_len, down_left),(backward_len, up_left))
+    #need to flip the sign of the amount added to curr_row when going forward
+    looped = -1
+    #for forward diagonals ( / ) and backward ( \ )
+    best = 0
+    for direction in loop_info:
+        #for i from range of the number of diagonals
+        for i in range(direction[0] - 3):
+            score = 1
+            #make the diagonal, starting at first valid position
+            new_diag = [board[curr_row + looped * (- direction[1] + i + j)]
+                    [curr_col - direction[1] + i + j] for j in range(4)]
+            #do correct things
+            for place in new_diag:
+                if place == player:
+                    score += 1
+                elif place == 0:
+                    pass
+                else:
+                    score = 0
+                    break
+            if score > best:
+                best = score
+        #flip sign after we've looped once
+        looped = 1
     return best
 
 
