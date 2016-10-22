@@ -46,26 +46,26 @@ def SearchHorizontal(board, curr_row, curr_col, col_min, col_max, player):
     much player can score"""
     count = 1
     for chosen_col in range(col_min, col_max + 1):
-        if board[curr_row, chosen_col] == player:
+        if board[curr_row][chosen_col] == player:
             count += 1
-        elif board[curr_row, chosen_col] != 0:
+        elif board[curr_row][chosen_col] != 0:
             return 0  # opposing player is here, can't possibly win if we go here, abort
     return count
 
 
-def SearchVertical(board, curr_row, curr_col, col_row, row_max, player):
+def SearchVertical(board, curr_row, curr_col, row_min, row_max, player):
     """Search from our current location in range [col_min, col_max] to see how
     much player can score"""
     count = 1
     for chosen_row in range(row_min, row_max + 1):
-        if board[curr_row, chosen_row] == player:
+        if board[curr_row][chosen_row] == player:
             count += 1
-        elif board[curr_row, chosen_row] != 0:
+        elif board[curr_row][chosen_row] != 0:
             return 0  # opposing player is here, can't possibly win if we go here, abort
     return count
 
 
-def SearchAndScore(board, row, el):
+def SearchAndScore(board, row, col):
     """
     Search in all cardinal directions for pieces, for both players, and determine how badly they
     want to be at (row, col)
@@ -85,22 +85,31 @@ def SearchAndScore(board, row, el):
     vert_p1 = SearchVertical(board, row, col, row_min, row_max, 1)
     vert_p2 = SearchVertical(board, row, col, row_min, row_max, 2)
 
-    diag_p1 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
-    diag_p2 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 2)
+    # diag_p1 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
+    # diag_p2 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 2)
 
     # return a turple
-    return (max(horiz_p1, vert_p1, diag_p1), max(horiz_p2, vert_p2, diag_p2))
+    # return (max(horiz_p1, vert_p1, diag_p1), max(horiz_p2, vert_p2, diag_p2))
+    return (max([horiz_p1, vert_p1]), max([horiz_p2, vert_p2]))
 
 
 def ScoreEmptyPositions(board):
     """
     Score the empty positions of the board according to who wants to be there the most
     """
-    scored_board = [[None] * len(board[0])] * len(board)
-    for row in range(len(board)):
-        for el in range(len(board[0])):
+    # pass by reference is not what we want here, list comprehension is good
+    final = [None] * len(board[0])
+
+    for col in range(len(board[0])):
+        for row in range(len(board) - 1, -1, -1):
             if board[row][col] == 0:
-                scored_board[row][el] = SearchAndScore(board, row, el)
+                final[col] = SearchAndScore(board, row, col)
+                # stop going up in this col
+                break
+
+    # now condense the scored bored
+
+    return final
 
 
 def get_args():
@@ -137,6 +146,8 @@ def main():
     PrintBanner(sys.stderr)
     board = eval(args.board[1:-1])
     PrettyPrint(board, sys.stderr)
+    scored_board = ScoreEmptyPositions(board)
+    print("Possible column scores:\n{}".format(scored_board), file=sys.stderr)
     sys.exit(play_random(board))
 
 
