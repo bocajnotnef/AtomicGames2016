@@ -85,7 +85,7 @@ def SearchDiag(board, curr_row, curr_col, row_min, row_max, col_min, col_max,
     #for each value in range from 0 to length of diag - 4 inclusive
     best = 0
     for i in range(forward_len-3):
-        score = 0
+        score = 1
         new_diag = [board[curr_row-down_left+i][curr_col-down_left+i],
                     board[curr_row-down_left+i+1][curr_col-down_left+i+1],
                     board[curr_row-down_left+i+2][curr_col-down_left+i+2],
