@@ -238,7 +238,7 @@ def play_scored(board, player):
             their_max_poss = scored_board[position][them]
             their_best_position = position
 
-    if their_max_poss == 3 or their_max_poss > our_max_poss:
+    if their_max_poss == 4 or their_max_poss > our_max_poss:
         return their_best_position
     else:
         return our_best_position
