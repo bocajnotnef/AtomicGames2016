@@ -11,6 +11,8 @@ def get_args():
     returns parsed args"""
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--board", help="JSON string of board state")
+    parser.add_argument("-t", "--timetokill", help="Allowed runtime length of program")
+    parser.add_argument("-p", "--player", help="Which player we'll be")
     parser.add_argument("--debug", action="store_true",
                         help="Debug Mode")
     return parser.parse_args()
