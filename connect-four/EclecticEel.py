@@ -41,6 +41,9 @@ $$$$$$$$\\$$$$$$$\ $$ |$$$$$$$  |
     print(banner, file=location)
 
 
+def SearchHorizontal()
+
+
 def SearchAndScore(board, row, el):
     """
     Search in all cardinal directions for pieces, for both players, and determine how badly they
@@ -55,14 +58,14 @@ def SearchAndScore(board, row, el):
     col_min = min([col - 3, 0])
 
     # do each search
-    horiz_p1 = SearchHorizontal(row, col, col_min, col_max, 1)
-    horiz_p2 = SearchHorizontal(row, col, col_min, col_max, 2)
+    horiz_p1 = SearchHorizontal(board, row, col, col_min, col_max, 1)
+    horiz_p2 = SearchHorizontal(board, row, col, col_min, col_max, 2)
 
-    vert_p1 = SearchVertical(row, col, row_min, row_max, 1)
-    vert_p2 = SearchVertical(row, col, row_min, row_max, 2)
+    vert_p1 = SearchVertical(board, row, col, row_min, row_max, 1)
+    vert_p2 = SearchVertical(board, row, col, row_min, row_max, 2)
 
-    diag_p1 = SearchDiag(row, col, row_min, row_max, col_min, col_max, 1)
-    diag_p2 = SearchDiag(row, col, row_min, row_max, col_min, col_max, 1)
+    diag_p1 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
+    diag_p2 = SearchDiag(board, row, col, row_min, row_max, col_min, col_max, 1)
 
 
 def ScoreEmptyPositions(board):
@@ -72,7 +75,8 @@ def ScoreEmptyPositions(board):
     scored_board = [[None] * len(board[0])] * len(board)
     for row in range(len(board)):
         for el in range(len(board[0])):
-            scored_board[row][el] = SearchAndScore(board, row, el)
+            if board[row][col] == 0:
+                scored_board[row][el] = SearchAndScore(board, row, el)
 
 
 def get_args():
